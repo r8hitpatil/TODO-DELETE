@@ -20,8 +20,8 @@ export const createTaskSchema = object({
 export const updateTaskSchema = object({
     ...params,
     body : object({
-        title: string().min(2,"Minimum 2 character required"),
-        description: string().min(10,"Minimum character 10 required")
+        title: string().min(2,"Minimum 2 character required").optional(),
+        description: string().min(10,"Minimum character 10 required").optional()
     })
 })
 

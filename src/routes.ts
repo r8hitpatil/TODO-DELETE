@@ -2,11 +2,16 @@ import type { Express , Request, Response } from "express";
 import validateResource from "./middleware/validateResource";
 import { createTaskSchema, updateTaskSchema } from "./schema/task.schema";
 import { createTaskHandler, deleteTaskHandler, getTasksHandler, updateTaskHandler } from "./controller/task.controller";
-import { findAndUpdate } from "./service/task.service";
+import pool from "./utils/connect";
 
 function routes(app:Express){
-    app.get('/health',(req:Request,res:Response) => {
-        res.send('OK');
+    app.get('/health', async (req:Request,res:Response) => {
+        try {
+            await pool.query("SELECT 1");
+            res.json({status:'OK',database:'connected'});
+        } catch (error) {
+            res.status(503).json({ status : 'ERROR',database: 'disconnected' })
+        }
     })
 
     app.post('/task',validateResource(createTaskSchema),createTaskHandler);

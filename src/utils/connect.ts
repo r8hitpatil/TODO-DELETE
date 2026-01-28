@@ -1,4 +1,7 @@
 import { Pool } from 'pg';
+import pino from 'pino';
+
+const logger = pino();
 
 const pool = new Pool({
     host:process.env.PGHOST,
@@ -7,5 +10,9 @@ const pool = new Pool({
     user:process.env.PGUSER,
     password:process.env.PGPASSWORD,
 });
+
+pool.on('error',(err:any) => {
+    logger.error('Unexpected error on idle client',err);
+})
 
 export default pool;
